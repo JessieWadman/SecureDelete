@@ -6,6 +6,9 @@ InstallModes:
   - silent
   - silentWithProgress
 UpgradeBehavior: install
+Dependencies:
+  PackageDependencies:
+    - PackageIdentifier: Microsoft.Sysinternals.SDelete
 Installers:
   - Architecture: x64
     InstallerUrl: __INSTALLER_URL__

@@ -42,6 +42,22 @@ After downloading, place **`sdelete64.exe`** (or `sdelete.exe`) either:
 If SDelete cannot be found when you run **Secure Delete**, SecureDelete shows a
 dialog with a button that opens the official Microsoft download page.
 
+### Installing via winget pulls SDelete automatically
+
+The winget package declares a dependency on Microsoft's official
+**`Microsoft.Sysinternals.SDelete`** package, so:
+
+```powershell
+winget install JessieWadman.SecureDelete
+```
+
+installs SDelete first (from Microsoft), then SecureDelete. SDelete's portable
+package places `sdelete.exe` / `sdelete64.exe` on your `PATH`, where SecureDelete
+finds it automatically — no manual setup. This is a dependency reference, not
+redistribution: winget fetches SDelete directly from Microsoft. If you install
+SecureDelete any other way (the standalone installer or a portable copy), you
+still obtain SDelete yourself as described above.
+
 ### How SDelete is discovered
 
 SecureDelete looks for SDelete in this order:
