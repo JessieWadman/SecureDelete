@@ -25,5 +25,8 @@ jobs:
     steps:
       - uses: googleapis/release-please-action@v4
         with:
+          # Use a PAT (not the default GITHUB_TOKEN) so that the published release
+          # triggers the Release workflow — the default token cannot start other workflows.
+          token: ${{ secrets.WINGET_TOKEN }}
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
