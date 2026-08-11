@@ -24,9 +24,6 @@ on:
 permissions:
   contents: write   # upload the installer asset to the Release
 
-env:
-  WINGET_PACKAGE_ID: JessieWadman.SecureDelete
-
 jobs:
   release:
     runs-on: windows-latest
@@ -95,14 +92,21 @@ jobs:
           $version = "${{ steps.ver.outputs.version }}"
           $tag     = "${{ steps.ver.outputs.tag }}"
           $url = "https://github.com/${{ github.repository }}/releases/download/$tag/$env:INSTALLER_NAME"
+          $sha = (Get-FileHash $env:INSTALLER_PATH -Algorithm SHA256).Hash
+
+          # Render the manifest triplet from templates. Using 'wingetcreate submit' on a
+          # complete manifest works for the first submission and every update alike.
+          $out = Join-Path $env:RUNNER_TEMP 'winget-manifests'
+          New-Item -ItemType Directory -Force $out | Out-Null
+          Get-ChildItem winget/*.yaml | ForEach-Object {
+              (Get-Content $_ -Raw).
+                Replace('__VERSION__', $version).
+                Replace('__INSTALLER_URL__', $url).
+                Replace('__INSTALLER_SHA256__', $sha) |
+                Set-Content (Join-Path $out $_.Name) -NoNewline
+          }
 
           Write-Host "Fetching wingetcreate..."
           Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
 
-          # 'update' bumps an already-listed package. For the FIRST-EVER submission,
-          # change 'update' to 'new' (wingetcreate prompts for the missing metadata).
-          ./wingetcreate.exe update $env:WINGET_PACKAGE_ID `
-            --version $version `
-            --urls "$url" `
-            --submit `
-            --token $env:WINGET_TOKEN
+          ./wingetcreate.exe submit --token $env:WINGET_TOKEN $out

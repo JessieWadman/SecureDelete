@@ -1,0 +1,5 @@
+PackageIdentifier: JessieWadman.SecureDelete
+PackageVersion: __VERSION__
+DefaultLocale: en-US
+ManifestType: version
+ManifestVersion: 1.6.0
