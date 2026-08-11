@@ -1,0 +1,29 @@
+name: Release Please
+
+# Automatic semantic versioning from Conventional Commit messages.
+#
+# On every push to main, release-please maintains a "release PR" that bumps the
+# version (in .release-please-manifest.json and src/SecureDelete/SecureDelete.csproj)
+# and updates CHANGELOG.md. Merging that PR creates the vX.Y.Z tag and publishes the
+# GitHub Release, which triggers release.yml to build the installer and push to winget.
+#
+#   fix:            -> patch  (1.0.0 -> 1.0.1)
+#   feat:           -> minor  (1.0.0 -> 1.1.0)
+#   feat!: / BREAKING CHANGE -> major (1.0.0 -> 2.0.0)
+
+on:
+  push:
+    branches: [ main ]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json

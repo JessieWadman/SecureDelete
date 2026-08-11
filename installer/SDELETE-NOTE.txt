@@ -1,0 +1,22 @@
+IMPORTANT: SecureDelete requires Microsoft Sysinternals SDelete
+
+SecureDelete is only a safe Windows Explorer wrapper. The actual secure
+overwrite is performed by Microsoft's official SDelete utility, which is a
+SEPARATE download and is NOT included with this installer.
+
+Under Microsoft's Sysinternals license, SDelete may not be redistributed by
+third parties, so you must obtain it yourself from Microsoft:
+
+    https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete
+
+After downloading, place sdelete64.exe (or sdelete.exe) either:
+
+  * in the SecureDelete installation folder, next to SecureDelete.exe, or
+  * anywhere on your PATH.
+
+If SDelete cannot be found when you use "Secure Delete", SecureDelete will
+show a dialog with a link to the official Microsoft download page.
+
+Note on limitations: overwriting a file does not guarantee physical erasure
+on SSD/NVMe/flash storage, copy-on-write filesystems, snapshots, backups, or
+network storage. See the README for details.

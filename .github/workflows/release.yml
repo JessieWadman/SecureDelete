@@ -1,0 +1,108 @@
+name: Release
+
+# Builds the self-contained app, compiles the Inno Setup installer, attaches it to
+# the GitHub Release, and submits the new version to the winget community repo.
+#
+# Versioning is automatic: release-please (see release-please.yml) computes the semver
+# from Conventional Commit messages, tags vX.Y.Z, and publishes the Release. That
+# "release: published" event triggers this workflow.
+#
+# Required repository secret:
+#   WINGET_TOKEN  A GitHub PAT (classic, "public_repo" scope) on the account that owns
+#                 a fork of microsoft/winget-pkgs. Used by wingetcreate to open the PR.
+#                 If unset, the winget step is skipped (the release is still built).
+
+on:
+  release:
+    types: [ published ]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to (re)build, e.g. 1.0.0 (must have an existing tag/release)'
+        required: true
+
+permissions:
+  contents: write   # upload the installer asset to the Release
+
+env:
+  WINGET_PACKAGE_ID: JessieWadman.SecureDelete
+
+jobs:
+  release:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Resolve version
+        id: ver
+        shell: pwsh
+        run: |
+          if ("${{ github.event_name }}" -eq 'release') {
+              $version = "${{ github.event.release.tag_name }}" -replace '^v',''
+          } else {
+              $version = "${{ github.event.inputs.version }}" -replace '^v',''
+          }
+          if ($version -notmatch '^\d+\.\d+\.\d+') { throw "Bad version: $version" }
+          "version=$version" >> $env:GITHUB_OUTPUT
+          "tag=v$version"     >> $env:GITHUB_OUTPUT
+          Write-Host "Version: $version"
+
+      - name: Test
+        run: dotnet test SecureDelete.sln -c Release
+
+      - name: Publish (self-contained win-x64)
+        run: >
+          dotnet publish src/SecureDelete/SecureDelete.csproj
+          -c Release -r win-x64 --self-contained true -p:PublishSingleFile=false
+          -p:Version=${{ steps.ver.outputs.version }}
+          -o artifacts/publish
+
+      - name: Install Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Build installer
+        shell: pwsh
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" `
+            "/DAppVersion=${{ steps.ver.outputs.version }}" `
+            installer/SecureDelete.iss
+          $exe = Get-ChildItem artifacts/installer/*.exe | Select-Object -First 1
+          if (-not $exe) { throw 'Installer was not produced' }
+          "INSTALLER_PATH=$($exe.FullName)" >> $env:GITHUB_ENV
+          "INSTALLER_NAME=$($exe.Name)"     >> $env:GITHUB_ENV
+          Write-Host "Installer: $($exe.Name)"
+
+      - name: Attach installer to the Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release upload "${{ steps.ver.outputs.tag }}" "$env:INSTALLER_PATH" --clobber
+
+      - name: Submit to winget
+        shell: pwsh
+        env:
+          WINGET_TOKEN: ${{ secrets.WINGET_TOKEN }}
+        run: |
+          if (-not $env:WINGET_TOKEN) {
+              Write-Warning 'WINGET_TOKEN secret is not set; skipping winget submission.'
+              exit 0
+          }
+          $version = "${{ steps.ver.outputs.version }}"
+          $tag     = "${{ steps.ver.outputs.tag }}"
+          $url = "https://github.com/${{ github.repository }}/releases/download/$tag/$env:INSTALLER_NAME"
+
+          Write-Host "Fetching wingetcreate..."
+          Invoke-WebRequest https://aka.ms/wingetcreate/latest -OutFile wingetcreate.exe
+
+          # 'update' bumps an already-listed package. For the FIRST-EVER submission,
+          # change 'update' to 'new' (wingetcreate prompts for the missing metadata).
+          ./wingetcreate.exe update $env:WINGET_PACKAGE_ID `
+            --version $version `
+            --urls "$url" `
+            --submit `
+            --token $env:WINGET_TOKEN

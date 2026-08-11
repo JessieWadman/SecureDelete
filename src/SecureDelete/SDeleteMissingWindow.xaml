@@ -1,0 +1,38 @@
+<Window x:Class="SecureDelete.SDeleteMissingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SDelete is required"
+        Width="480" SizeToContent="Height"
+        ResizeMode="NoResize" WindowStartupLocation="CenterScreen"
+        Background="{StaticResource WindowBackground}"
+        UseLayoutRounding="True" FontFamily="Segoe UI" FontSize="13">
+    <Border Padding="20">
+        <StackPanel>
+            <TextBlock FontSize="16" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimary}"
+                       Text="Microsoft Sysinternals SDelete is required"/>
+
+            <TextBlock Margin="0,12,0,0" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextSecondary}"
+                       Text="SecureDelete is a wrapper around Microsoft's official SDelete utility, which performs the actual secure overwrite. SDelete is a separate Microsoft download and, under the Sysinternals licence, cannot be redistributed with SecureDelete."/>
+
+            <TextBlock Margin="0,12,0,0" TextWrapping="Wrap"
+                       Foreground="{StaticResource TextSecondary}"
+                       Text="Download SDelete from Microsoft, then place sdelete64.exe (or sdelete.exe) next to SecureDelete.exe, or anywhere on your PATH."/>
+
+            <Button x:Name="DownloadButton" Margin="0,16,0,0" HorizontalAlignment="Left"
+                    Height="32" MinWidth="220" Padding="16,0" Cursor="Hand"
+                    Click="OnOpenDownloadPage"
+                    Content="Open Microsoft SDelete download page"
+                    Background="White" BorderBrush="{StaticResource NeutralBorder}"/>
+
+            <TextBlock Margin="0,10,0,0" Foreground="{StaticResource TextSecondary}" FontSize="12"
+                       Text="https://learn.microsoft.com/en-us/sysinternals/downloads/sdelete"/>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,18,0,0">
+                <Button Content="Close" Style="{StaticResource NeutralButton}"
+                        IsDefault="True" IsCancel="True" Click="OnClose"/>
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</Window>

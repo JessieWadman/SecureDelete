@@ -1,0 +1,27 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureDelete", "src\SecureDelete\SecureDelete.csproj", "{B1A1E1C1-0001-4001-8001-000000000001}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SecureDelete.Tests", "tests\SecureDelete.Tests\SecureDelete.Tests.csproj", "{B1A1E1C1-0002-4001-8001-000000000002}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1A1E1C1-0001-4001-8001-000000000001}.Debug|x64.ActiveCfg = Debug|x64
+		{B1A1E1C1-0001-4001-8001-000000000001}.Debug|x64.Build.0 = Debug|x64
+		{B1A1E1C1-0001-4001-8001-000000000001}.Release|x64.ActiveCfg = Release|x64
+		{B1A1E1C1-0001-4001-8001-000000000001}.Release|x64.Build.0 = Release|x64
+		{B1A1E1C1-0002-4001-8001-000000000002}.Debug|x64.ActiveCfg = Debug|x64
+		{B1A1E1C1-0002-4001-8001-000000000002}.Debug|x64.Build.0 = Debug|x64
+		{B1A1E1C1-0002-4001-8001-000000000002}.Release|x64.ActiveCfg = Release|x64
+		{B1A1E1C1-0002-4001-8001-000000000002}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

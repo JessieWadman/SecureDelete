@@ -1,0 +1,12 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+artifacts/
+
+# User/IDE
+.vs/
+*.user
+*.suo
+
+# Rider
+.idea/
