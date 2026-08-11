@@ -234,6 +234,10 @@ Artifacts:
 - Executable: `artifacts\publish\SecureDelete.exe`
 - Installer:  `artifacts\installer\SecureDelete-1.0.0-Setup.exe`
 
+> **Contributing & releasing:** commit conventions, the automated versioning /
+> release flow, and how winget publishing works are documented in
+> [`CONTRIBUTING.md`](CONTRIBUTING.md).
+
 ### Release packaging notes
 
 The app is published **self-contained** (framework + WPF included) so end users
