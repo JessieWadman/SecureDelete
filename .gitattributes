@@ -1,0 +1,12 @@
+# Normalize line endings: LF in the repository for text files.
+* text=auto eol=lf
+
+# Windows-oriented files that are conventionally CRLF.
+*.sln    text eol=crlf
+*.iss    text eol=crlf
+*.manifest text eol=crlf
+
+# Binary assets.
+*.ico    binary
+*.png    binary
+*.exe    binary
